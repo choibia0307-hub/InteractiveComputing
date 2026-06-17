@@ -21,23 +21,22 @@ let handleY;
 let isDraggingSlider = false;
 let spreadRadius = 0.22; // 기본 물감 분산 반경
 
-// ── [신규 추가] 각 색상별 세련된 아날로그 텍스처 컬러 팔레트 리스트 ──
-// 단색이 아닌 미세하게 다른 톤들이 겹치며 회화적인 깊이감을 만듭니다.
+// 각 색상별 세련된 아날로그 텍스처 컬러 팔레트 리스트
 const colorPalettes = {
   '빨강': [
-    { r: 255, g: 5,   b: 45 },  // 오리지널 진홍빛 빨강
-    { r: 230, g: 15,  b: 20 },  // 묵직한 버밀리언 딥
-    { r: 255, g: 65,  b: 80 }   // 맑고 경쾌한 스칼렛 틴트
+    { r: 255, g: 5,   b: 45 },  
+    { r: 230, g: 15,  b: 20 },  
+    { r: 255, g: 65,  b: 80 }   
   ],
   '노랑': [
-    { r: 255, g: 210, b: 0 },   // 오리지널 중크롬 옐로우
-    { r: 255, g: 230, b: 60 },  // 빛을 머금은 레몬 옐로우
-    { r: 235, g: 170, b: 0 }    // 깊이감을 주는 인디안 옐로우 딥
+    { r: 255, g: 210, b: 0 },   
+    { r: 255, g: 230, b: 60 },  
+    { r: 235, g: 170, b: 0 }    
   ],
   '파랑': [
-    { r: 0,   g: 85,  b: 255 }, // 오리지널 코발트 블루
-    { r: 0,   g: 50,  b: 180 }, // 딥 오션 울트라마린
-    { r: 30,  g: 135, b: 240 }  // 투명한 세룰리안 블루
+    { r: 0,   g: 85,  b: 255 }, 
+    { r: 0,   g: 50,  b: 180 }, 
+    { r: 30,  g: 135, b: 240 }  
   ]
 };
 
@@ -65,7 +64,6 @@ function draw() {
   background(252, 251, 248); 
   applyPaperTexture(); 
 
-  // 드래그 상태일 때 실시간으로 슬라이더 값 업데이트
   if (isDraggingSlider) {
     handleY = constrain(mouseY, sliderY, sliderY + sliderH);
     spreadRadius = map(handleY, sliderY + sliderH, sliderY, 0.05, 0.5);
@@ -119,7 +117,7 @@ function draw() {
     pop();
   }
 
-  // 2. [충전 영역] 소리를 지르는 동안 마우스 타겟 좌표 주변에 시각 연출
+  // 2. [충전 영역] 시각 연출
   if (isCharging) {
     chargeTimer += 1;
     blendMode(BLEND);
@@ -140,7 +138,7 @@ function draw() {
     }
   }
 
-  // 3. [동적 영역] 공중을 날아가는 물감 입자들 처리
+  // 3. [동적 영역] 물감 입자 처리
   blendMode(MULTIPLY); 
   for (let i = flyingParticles.length - 1; i >= 0; i--) {
     let p = flyingParticles[i];
@@ -183,7 +181,7 @@ function draw() {
         points: points,
         microDots: microDots,
         rotation: random(TWO_PI),
-        baseColor: p.baseColor, // 입자 생성 시 부여받은 고유 컬러가 그대로 유지됨
+        baseColor: p.baseColor, 
         currentAlpha: p.initialAlpha, 
         age: 0, 
         growthDuration: random(15, 30),
@@ -204,7 +202,10 @@ function draw() {
   let uiWidth = 800;          
   let uiHeight = 56;          
   let uiX = width / 2 - uiWidth / 2; 
-  let uiY = 25;               
+  
+  // 🌟 [수정 포인트] 상단 타이틀 폰트 높이(약 112px)에 꼬이지 않게 상태 박스 Y축을 140으로 하향 조정
+  let uiY = 140;               
+  
   fill(0, 0, 0, 160);
   rect(uiX, uiY, uiWidth, uiHeight, 8);
   fill(255);
@@ -270,7 +271,6 @@ function gotResult(error, results) {
     currentChargeTag = top.label;
     label = `${top.label} 충전 중... (${nf(conf * 100, 1, 0)}%)`;
 
-    // 충전 중 가이드 링은 오리지널 대표 색상으로 가시화하되, 투명도만 신뢰도에 연동
     let targetAlpha = map(conf, 0.45, 1.0, 15, 70);
     if (top.label === '빨강') currentChargeColor = color(255, 5, 45, targetAlpha);
     if (top.label === '노랑') currentChargeColor = color(255, 210, 0, targetAlpha);
@@ -280,7 +280,6 @@ function gotResult(error, results) {
   }
 }
 
-// ── [업데이트] 폭발하는 파티클마다 팔레트 리스트 내의 색상을 무작위로 부여 ──
 function drawMouseTargetExplosion() {
   let dynamicCountMin = map(spreadRadius, 0.05, 0.5, 30, 120);
   let dynamicCountMax = map(spreadRadius, 0.05, 0.5, 60, 200);
@@ -298,7 +297,6 @@ function drawMouseTargetExplosion() {
     startX = width + 40; startY = height + 40;
   }
 
-  // 현재 인식된 태그('빨강', '노랑', '파랑')에 맞는 컬러 리스트 추출
   let activePalette = colorPalettes[currentChargeTag];
 
   for (let i = 0; i < count; i++) {
@@ -308,9 +306,8 @@ function drawMouseTargetExplosion() {
     let flightDuration = random(20, 50); 
     let randomSize = (random() < 0.85 ? random(8, 40) : random(40, 120)) * sizeMultiplier; 
     
-    // 🎨 [핵심 코드] 팔레트 배열에서 무작위로 하나의 서브 톤을 골라 고유 색상을 생성
     let pickedColorData = random(activePalette);
-    let finalAlpha = currentChargeColor.levels[3]; // 기존 음성 신뢰도 기반 alpha 연동 유지
+    let finalAlpha = currentChargeColor.levels[3]; 
     let particleColor = color(pickedColorData.r, pickedColorData.g, pickedColorData.b, finalAlpha);
 
     flyingParticles.push({
@@ -325,8 +322,8 @@ function drawMouseTargetExplosion() {
       arcHeight: random(-150, 150), 
       arcAngle: atan2(targetY - startY, targetX - startX) + HALF_PI,
       size: randomSize, 
-      color: particleColor,       // 파티클의 실시간 비행 컬러
-      baseColor: particleColor,   // 안착 후 번질 고유의 바닥 컬러
+      color: particleColor,       
+      baseColor: particleColor,   
       initialAlpha: finalAlpha
     });
   }

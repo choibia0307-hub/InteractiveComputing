@@ -25,20 +25,20 @@
         position: fixed;
         top: 0;
         left: 0;
-        z-index: 999999 !important; /* 캔버스 아트워크보다 무조건 위 */
+        z-index: 999999 !important; /* 캔버스보다 무조건 위 */
         width: 100%;
         padding-left: clamp(42px, 8.7vw, 112px);
         padding-top: clamp(42px, 8vw, 78px);
         text-transform: uppercase;
-        pointer-events: none; /* 마우스 클릭이 캔버스 인터랙션을 방해하지 않도록 설정 */
+        pointer-events: none; /* 마우스 클릭이 캔버스를 관통하도록 설정 */
       }
 
       /* 좌측 홈 버튼 흰색 스타일 */
       .nav-text {
         margin: 0;
         display: inline-block;
-        pointer-events: auto; /* 홈 버튼 클릭 활성화 */
-        color: rgba(247, 255, 253, 0.88) !important; /* 🌟 화이트 컬러 지정 */
+        pointer-events: auto; /* 클릭 활성화 */
+        color: rgba(247, 255, 253, 0.88) !important; /* 🌟 흰색 컬러 지정 */
         font-family: Arial, Helvetica, sans-serif;
         font-size: clamp(30px, 2.85vw, 39px);
         font-weight: 700;
