@@ -9,9 +9,14 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(2500, 2000);
+  createCanvas(windowWidth, windowHeight);
   noStroke();
+  img.resize(windowWidth, windowHeight);
+  buildFlaps();
+}
 
+function buildFlaps() {
+  flaps = [];
   // 별이 커졌으므로 간격 배수(2.2)는 유지하여 겹침을 방지합니다.
   cols = ceil(width / (flapWidth * 2.2));
   rows = ceil(height / (flapWidth * 2.2));
@@ -24,6 +29,12 @@ function setup() {
       flaps.push(flap);
     }
   }
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  img.resize(windowWidth, windowHeight);
+  buildFlaps();
 }
 
 function draw() {
@@ -56,8 +67,8 @@ class Flap {
     this.rad = 0;
     this.currentSize = flapWidth;
     
-    let ix = map(this.x, 0, width, 0, img.width);
-    let iy = map(this.y, 0, height, 0, img.height);
+    let ix = constrain(floor(this.x), 0, img.width - 1);
+    let iy = constrain(floor(this.y), 0, img.height - 1);
     this.c = img.get(ix, iy);
   }
 

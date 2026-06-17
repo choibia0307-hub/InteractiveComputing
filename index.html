@@ -7,9 +7,7 @@
   <style>
     :root {
       --cyan: #05ddcb;
-      --white: rgba(247, 255, 253, 0.86);
-      --white-strong: #f7fffd;
-      --line: rgba(247, 255, 253, 0.16);
+      --white: rgba(247, 255, 253, 0.88);
     }
 
     * {
@@ -23,136 +21,93 @@
 
     body {
       margin: 0;
-      color: var(--white-strong);
       background: var(--cyan);
+      color: var(--white);
       font-family: Arial, Helvetica, sans-serif;
       letter-spacing: 0;
       overflow: hidden;
     }
 
-    a,
-    button {
+    button,
+    a {
       font: inherit;
     }
 
-    .screen {
-      position: relative;
+    .page {
       min-height: 100vh;
-      display: grid;
-      grid-template-rows: auto 1fr;
+      position: relative;
       overflow: hidden;
-      background:
-        linear-gradient(90deg, var(--line) 1px, transparent 1px),
-        linear-gradient(0deg, var(--line) 1px, transparent 1px),
-        var(--cyan);
-      background-size: 84px 84px;
-    }
-
-    .screen::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(110deg, transparent 0 42%, rgba(255, 255, 255, 0.12) 42% 42.35%, transparent 42.35%),
-        linear-gradient(250deg, transparent 0 61%, rgba(0, 0, 0, 0.07) 61% 61.4%, transparent 61.4%);
-      opacity: 0.28;
-      pointer-events: none;
+      background: var(--cyan);
     }
 
     .topbar {
       position: relative;
       z-index: 1;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto 24px;
+      grid-template-columns: minmax(0, 1fr) 20px;
       align-items: center;
-      gap: clamp(26px, 8vw, 130px);
-      width: min(74vw, 680px);
-      margin: clamp(38px, 8vw, 78px) 0 0 clamp(34px, 8vw, 110px);
+      gap: clamp(36px, 7.5vw, 112px);
+      width: 100%;
+      padding-left: clamp(42px, 8.7vw, 112px);
+      padding-right: clamp(42px, 8.7vw, 112px);
+      padding-top: clamp(42px, 8vw, 78px);
       text-transform: uppercase;
     }
 
-    .topbar a {
+    .nav-text {
+      margin: 0;
       color: var(--white);
-      font-size: clamp(10px, 1vw, 13px);
+      font-size: clamp(10px, 0.95vw, 13px);
       font-weight: 700;
       line-height: 1;
-      text-decoration: none;
       white-space: nowrap;
     }
 
-    .topbar a::after {
-      content: "";
-      display: block;
-      width: 100%;
-      height: 1px;
-      margin-top: 8px;
-      background: currentColor;
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 180ms ease;
-    }
-
-    .topbar a:hover::after,
-    .topbar a:focus-visible::after {
-      transform: scaleX(1);
-    }
-
-    .menu {
-      width: 24px;
+    .menu-icon {
+      justify-self: end;
+      width: 20px;
       height: 18px;
       display: grid;
-      place-items: center;
+      gap: 4px;
       padding: 0;
       border: 0;
       background: transparent;
       cursor: pointer;
     }
 
-    .menu[aria-expanded="true"]::before {
-      transform: translateY(4px) rotate(45deg);
-    }
-
-    .menu[aria-expanded="true"] span {
-      transform: scaleX(0);
-    }
-
-    .menu[aria-expanded="true"]::after {
-      transform: translateY(-4px) rotate(-45deg);
-    }
-
-    .menu span,
-    .menu::before,
-    .menu::after {
-      content: "";
+    .menu-icon span {
       display: block;
-      width: 12px;
-      height: 2px;
-      background: var(--white);
-      transition: transform 180ms ease;
+      width: 100%;
+      height: 3px;
+      background: #f7fffd;
+      transition: transform 180ms ease, opacity 180ms ease;
     }
 
-    .menu[aria-expanded="false"]:hover::before {
-      transform: translateY(-1px);
+    .menu-icon[aria-expanded="true"] span:first-child {
+      transform: translateY(7px) rotate(45deg);
     }
 
-    .menu[aria-expanded="false"]:hover::after {
-      transform: translateY(1px);
+    .menu-icon[aria-expanded="true"] span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-icon[aria-expanded="true"] span:last-child {
+      transform: translateY(-7px) rotate(-45deg);
     }
 
     .project-menu {
       position: absolute;
       top: calc(100% + 18px);
-      right: 0;
+      right: clamp(42px, 8.7vw, 112px);
       display: grid;
       gap: 10px;
-      min-width: 118px;
       margin: 0;
       padding: 0;
       list-style: none;
       text-align: right;
       opacity: 0;
       pointer-events: none;
-      transform: translateY(-8px);
+      transform: translateY(-10px);
       transition: opacity 180ms ease, transform 180ms ease;
     }
 
@@ -164,7 +119,7 @@
 
     .project-menu li {
       opacity: 0;
-      transform: translateY(-7px);
+      transform: translateY(-8px);
       transition: opacity 180ms ease, transform 180ms ease;
       transition-delay: calc(var(--i) * 34ms);
     }
@@ -185,80 +140,41 @@
       white-space: nowrap;
     }
 
-    .content {
-      position: relative;
-      z-index: 1;
-      align-self: end;
-      width: min(76vw, 760px);
-      margin: 0 0 clamp(42px, 9vw, 92px) clamp(34px, 8vw, 110px);
-    }
-
-    h1 {
-      margin: 0;
-      max-width: 10ch;
-      color: var(--white-strong);
-      font-size: clamp(46px, 8.2vw, 116px);
-      font-weight: 700;
-      line-height: 0.9;
-      text-transform: uppercase;
-    }
-
-    .caption {
-      margin: clamp(18px, 3vw, 28px) 0 0;
-      max-width: 32ch;
-      color: rgba(247, 255, 253, 0.74);
-      font-size: clamp(10px, 1vw, 13px);
-      font-weight: 700;
-      line-height: 1.6;
-      text-transform: uppercase;
-    }
-
     @media (max-width: 720px) {
       body {
         overflow: auto;
       }
 
-      .screen {
+      .page {
         min-height: 100svh;
       }
 
       .topbar {
-        grid-template-columns: 1fr auto;
-        width: calc(100% - 44px);
-        margin: 28px 22px 0;
+        grid-template-columns: 1fr 20px;
         gap: 18px;
+        width: 100%;
+        padding-left: 22px;
+        padding-right: 22px;
+        padding-top: 32px;
       }
 
-      .topbar a:first-child {
-        grid-column: 1 / -1;
-      }
-
-      .topbar a:nth-child(2) {
-        justify-self: start;
-      }
-
-      .menu {
+      .menu-icon {
         justify-self: end;
       }
 
       .project-menu {
-        top: calc(100% + 14px);
-        right: 0;
-      }
-
-      .content {
-        width: calc(100% - 44px);
-        margin: 0 22px 38px;
+        right: 22px;
       }
     }
   </style>
 </head>
 <body>
-  <main class="screen" aria-label="Interactive Computing homepage">
-    <nav class="topbar" aria-label="Primary navigation">
-      <a href="#home">Interactive Computing</a>
-      <a href="#sketch">Sketch Title</a>
-      <button class="menu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="project-menu">
+  <main class="page" aria-label="Interactive Computing">
+    <header class="topbar">
+      <p class="nav-text">Interactive Computing</p>
+      <button class="menu-icon" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="project-menu">
+        <span></span>
+        <span></span>
         <span></span>
       </button>
       <ul class="project-menu" id="project-menu">
@@ -276,16 +192,11 @@
         <li style="--i: 12"><a href="12_voice_color/index.html">12_voice_color</a></li>
         <li style="--i: 13"><a href="13_world/index.html">13_world</a></li>
       </ul>
-    </nav>
-
-    <section class="content" id="home">
-      <h1>Interactive Computing</h1>
-      <p class="caption" id="sketch">A static homepage based on the cyan screen frame.</p>
-    </section>
+    </header>
   </main>
 
   <script>
-    const menuButton = document.querySelector(".menu");
+    const menuButton = document.querySelector(".menu-icon");
     const projectMenu = document.querySelector("#project-menu");
 
     menuButton.addEventListener("click", () => {
