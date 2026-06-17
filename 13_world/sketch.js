@@ -1,6 +1,4 @@
-let script = document.createElement('script');
-script.src = 'https://unpkg.com/ml5@1.2.0/dist/ml5.min.js';
-document.head.appendChild(script);
+
 
 let video;
 let handpose;
