@@ -1,9 +1,20 @@
 function setup() {
-  createCanvas(990, 1500);
+  createCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
   background(255);
+
+  // 오브젝트를 화면 중앙에 맞추고, 화면 높이에 비례하여 크기 조절
+  push();
+  translate(width / 2, height / 2);
+
+  // 원본 캔버스(990x1500)를 현재 화면 높이에 맞게 스케일링
+  let scaleFactor = height / 1500;
+  scale(scaleFactor);
+
+  // 스케일링된 캔버스의 중앙으로 다시 이동
+  translate(-990 / 2, -1500 / 2);
 
   //원
   //1번쨰 블럭
@@ -196,4 +207,9 @@ function draw() {
   triangle(880, 705+220, 880+55, 705+110, 990, 705+220);
 
 
+  pop();
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }

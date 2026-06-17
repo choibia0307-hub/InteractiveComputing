@@ -1,12 +1,22 @@
 function setup() {
-  createCanvas(1200, 1200);
+  createCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
   background(0);
   noStroke();
 
+  // 오브젝트를 화면 중앙에 맞추고, 화면 높이에 비례하여 크기 조절
+  push();
+  translate(width / 2, height / 2);
 
+  // 원본 캔버스(1200x1200)를 현재 화면 높이에 맞게 스케일링
+  // 정사각형이므로 높이 기준으로 맞춰도 가로/세로 비율이 유지됨
+  let scaleFactor = height / 1200;
+  scale(scaleFactor);
+
+  // 스케일링된 캔버스의 중앙으로 다시 이동
+  translate(-1200 / 2, -1200 / 2);
 
   //노여움
   fill('#b00000');
@@ -198,5 +208,9 @@ function draw() {
   endShape();
 
 
+  pop();
+}
 
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
