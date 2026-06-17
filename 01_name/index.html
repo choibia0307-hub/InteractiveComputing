@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Sketch</title>
 
     <link rel="stylesheet" type="text/css" href="style.css">
@@ -11,9 +10,183 @@
     <script src="libraries/p5.min.js"></script>
     <script src="libraries/p5.sound.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/p5@1.11.13/lib/p5.js"></script>
+
+    <style>
+      /* 🌟 상단바 전체 레이아웃 고정 */
+      .topbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 9999;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 20px;
+        align-items: center;
+        gap: clamp(36px, 7.5vw, 112px);
+        width: 100%;
+        padding-left: clamp(42px, 8.7vw, 112px);
+        padding-right: clamp(42px, 8.7vw, 112px);
+        padding-top: clamp(42px, 8vw, 78px);
+        text-transform: uppercase;
+        pointer-events: none;
+      }
+
+      /* 🌟 좌측 홈 버튼 검은색 스타일 */
+      .nav-text {
+        margin: 0;
+        display: inline-block;
+        pointer-events: auto;
+        color: #111111 !important; 
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: clamp(30px, 2.85vw, 39px);
+        font-weight: 700;
+        line-height: 1;
+        white-space: nowrap;
+        text-decoration: none;
+        transition: opacity 200ms ease;
+      }
+      .nav-text:hover {
+        opacity: 0.6;
+      }
+
+      /* 🌟 우측 햄버거 메뉴 아이콘 검은색 강제 고정 */
+      .menu-icon {
+        justify-self: end;
+        width: 20px;
+        height: 18px;
+        display: grid;
+        gap: 4px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+        pointer-events: auto;
+      }
+      
+      /* 🔥 ㅆㅂ 여기 막대기 색상 !important 박아서 무조건 검은색 탈바꿈 */
+      .menu-icon span {
+        display: block;
+        width: 100%;
+        height: 3px;
+        background-color: #111111 !important; 
+        transition: transform 180ms ease, opacity 180ms ease;
+      }
+      .menu-icon:hover span {
+        opacity: 0.6;
+      }
+
+      /* X자 변형 모션 시에도 검은색 유지 */
+      .menu-icon[aria-expanded="true"] span {
+        background-color: #111111 !important;
+      }
+      .menu-icon[aria-expanded="true"] span:first-child {
+        transform: translateY(7px) rotate(45deg);
+      }
+      .menu-icon[aria-expanded="true"] span:nth-child(2) {
+        opacity: 0;
+      }
+      .menu-icon[aria-expanded="true"] span:last-child {
+        transform: translateY(-7px) rotate(-45deg);
+      }
+
+      /* 🌟 드롭다운 프로젝트 메뉴 검은색 스타일 */
+      .project-menu {
+        position: absolute;
+        top: calc(100% + 18px);
+        right: clamp(42px, 8.7vw, 112px);
+        display: grid;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        text-align: right;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-10px);
+        transition: opacity 180ms ease, transform 180ms ease;
+      }
+      .project-menu.is-open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+      .project-menu li {
+        opacity: 0;
+        transform: translateY(-8px);
+        transition: opacity 180ms ease, transform 180ms ease;
+        transition-delay: calc(var(--i) * 34ms);
+      }
+      .project-menu.is-open li {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      
+      /* 🔥 드롭다운 안의 글씨들도 가차없이 딥블랙 때려박기 */
+      .project-menu a {
+        display: inline-block;
+        color: #111111 !important; 
+        font-size: clamp(9px, 0.86vw, 12px);
+        font-weight: 700;
+        line-height: 1;
+        text-decoration: none;
+        text-transform: uppercase;
+        white-space: nowrap;
+        transition: opacity 150ms ease;
+      }
+      .project-menu a:hover {
+        opacity: 0.5;
+      }
+
+      @media (max-width: 720px) {
+        .topbar {
+          grid-template-columns: 1fr 20px;
+          gap: 18px;
+          padding-left: 22px;
+          padding-right: 22px;
+          padding-top: 32px;
+        }
+        .project-menu {
+          right: 22px;
+        }
+      }
+    </style>
   </head>
 
   <body>
+    <header class="topbar">
+      <a href="../index.html" class="nav-text">Interactive Computing</a>
+      <button class="menu-icon" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="project-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <ul class="project-menu" id="project-menu">
+        <li style="--i: 1"><a href="../01_name/index.html">01_name</a></li>
+        <li style="--i: 2"><a href="../02_mood/index.html">02_mood</a></li>
+        <li style="--i: 3"><a href="../03_graphic/index.html">03_graphic</a></li>
+        <li style="--i: 4"><a href="../04_Geometric/index.html">04_Geometric</a></li>
+        <li style="--i: 5"><a href="../05_wave/index.html">05_wave</a></li>
+        <li style="--i: 6"><a href="../06_walls/index.html">06_walls</a></li>
+        <li style="--i: 7"><a href="../07_star/index.html">07_star</a></li>
+        <li style="--i: 8"><a href="../08_Heigth/index.html">08_Heigth</a></li>
+        <li style="--i: 9"><a href="../09_glitch/index.html">09_glitch</a></li>
+        <li style="--i: 10"><a href="../10_words/index.html">10_words</a></li>
+        <li style="--i: 11"><a href="../11_easing/index.html">11_easing</a></li>
+        <li style="--i: 12"><a href="../12_voice_color/index.html">12_voice_color</a></li>
+        <li style="--i: 13"><a href="../13_world/index.html">13_world</a></li>
+      </ul>
+    </header>
+
     <script src="sketch.js"></script>
+
+    <script>
+      const menuButton = document.querySelector(".menu-icon");
+      const projectMenu = document.querySelector("#project-menu");
+
+      menuButton.addEventListener("click", () => {
+        const isOpen = menuButton.getAttribute("aria-expanded") === "true";
+        menuButton.setAttribute("aria-expanded", String(!isOpen));
+        projectMenu.classList.toggle("is-open", !isOpen);
+      });
+    </script>
   </body>
 </html>

@@ -8,6 +8,7 @@
     :root {
       --cyan: #05ddcb;
       --white: rgba(247, 255, 253, 0.88);
+      --hover-color: #FF007B;
     }
 
     * {
@@ -17,15 +18,14 @@
     html,
     body {
       min-height: 100%;
-    }
-
-    body {
       margin: 0;
       background: var(--cyan);
       color: var(--white);
       font-family: Arial, Helvetica, sans-serif;
       letter-spacing: 0;
-      overflow: hidden;
+    }
+
+    body {
       overflow-x: hidden;
     }
 
@@ -34,23 +34,25 @@
       font: inherit;
     }
 
+    /* 뒤편에 깔리는 고정 비주얼 레이어 */
     .page {
       min-height: 100vh;
-      position: relative;
-      height: 100vh;
       width: 100%;
       position: fixed;
       top: 0;
       left: 0;
       overflow: hidden;
       background: var(--cyan);
-      z-index: 1;
+      z-index: 0; 
       will-change: transform;
     }
 
+    /* 🌟 상단 글로벌 네비게이션 바 (항상 최상단 고정 보장) */
     .topbar {
-      position: relative;
-      z-index: 1;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100; /* 👈 어떤 레이어보다 위에 오도록 명시 */
       display: grid;
       grid-template-columns: minmax(0, 1fr) 20px;
       align-items: center;
@@ -65,11 +67,16 @@
     .nav-text {
       margin: 0;
       color: var(--white);
-      font-size: clamp(10px, 0.95vw, 13px);
       font-size: clamp(30px, 2.85vw, 39px);
       font-weight: 700;
       line-height: 1;
       white-space: nowrap;
+      text-decoration: none;
+      transition: color 200ms ease;
+    }
+
+    .nav-text:hover {
+      color: var(--hover-color);
     }
 
     .menu-icon {
@@ -89,7 +96,11 @@
       width: 100%;
       height: 3px;
       background: #f7fffd;
-      transition: transform 180ms ease, opacity 180ms ease;
+      transition: transform 180ms ease, opacity 180ms ease, background-color 200ms ease;
+    }
+
+    .menu-icon:hover span {
+      background-color: var(--hover-color);
     }
 
     .menu-icon[aria-expanded="true"] span:first-child {
@@ -147,46 +158,107 @@
       text-decoration: none;
       text-transform: uppercase;
       white-space: nowrap;
+      transition: color 150ms ease;
     }
 
-    .intro-section {
+    .project-menu a:hover {
+      color: var(--hover-color);
+    }
+
+    /* 앞면 스크롤 영역 제어 컨테이너 */
+    .scroll-container {
       position: relative;
       z-index: 2;
-      margin-top: 100vh; /* 첫 화면 크기만큼 띄워서 스크롤해야 보이도록 설정 */
-      min-height: 100vh;
-      background: #111a18; /* 패럴랙스 대비 효과를 극대화하는 어두운 톤의 배경 */
-      color: var(--white);
+      height: 200vh;
+    }
+
+    /* 무대 공간 */
+    .about-stage {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: clamp(20px, 5vw, 60px);
-      text-align: center;
-      box-shadow: 0 -20px 40px rgba(0, 0, 0, 0.3); /* 올라올 때 그림자 깊이감 추가 */
+      justify-content: center; 
+      align-items: flex-start;
+      padding-left: clamp(42px, 8.7vw, 112px);
+      padding-right: clamp(42px, 8.7vw, 112px);
+      pointer-events: none;
+      z-index: 1; /* 🌟 topbar(100)보다 낮게 주어 상단바를 가리지 않도록 조정 */
     }
 
-    .intro-title {
-      font-size: clamp(28px, 4vw, 48px);
-      margin-bottom: 24px;
+    /* 타이틀과 본문을 패키징한 일체형 박스 */
+    .about-content-box {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 24px; 
+      pointer-events: auto;
+      will-change: transform;
+      
+      transform: translateY(calc(50vh - 80px - 22px)); 
+      transition: transform 600ms cubic-bezier(0.6, 0, 0.3, 1);
+    }
+
+    .about-link {
+      display: inline-block;
+      color: var(--white);
+      font-size: clamp(28px, 3vw, 36px);
       font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 2px;
+      transition: color 200ms ease;
+      cursor: pointer;
     }
 
+    .about-link:hover {
+      color: var(--hover-color);
+    }
+
+    /* 디스크립션 텍스트 */
     .intro-desc {
       font-size: clamp(16px, 1.5vw, 22px);
       max-width: 760px;
       line-height: 1.6;
+      margin: 0;
+      opacity: 0; 
+      word-break: keep-all;
+      
+      will-change: opacity, transform;
+      transform: translateY(20px);
+      transition: transform 600ms cubic-bezier(0.6, 0, 0.3, 1), opacity 500ms ease;
+    }
+
+    /* 정중앙 안착 상태 활성화 */
+    .about-stage.is-centered .about-content-box {
+      transform: translateY(0px); 
+    }
+
+    .about-stage.is-centered .intro-desc {
       opacity: 0.9;
-      word-break: keep-all; /* 한글 줄바꿈 최적화 */
+      transform: translateY(0px);
     }
 
     @media (max-width: 720px) {
-      body {
-        overflow: auto;
-      }
-
       .page {
         min-height: 100svh;
         height: 100svh;
+      }
+
+      .scroll-container {
+        height: 200svh;
+      }
+
+      .about-stage {
+        height: 100svh;
+        padding-left: 22px;
+        padding-right: 22px;
+      }
+
+      .about-content-box {
+        transform: translateY(calc(50svh - 50px - 18px));
       }
 
       .topbar {
@@ -198,10 +270,6 @@
         padding-top: 32px;
       }
 
-      .menu-icon {
-        justify-self: end;
-      }
-
       .project-menu {
         right: 22px;
       }
@@ -209,40 +277,53 @@
   </style>
 </head>
 <body>
-  <main class="page" aria-label="Interactive Computing">
-    <header class="topbar">
-      <p class="nav-text">Interactive Computing</p>
-      <button class="menu-icon" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="project-menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <ul class="project-menu" id="project-menu">
-        <li style="--i: 1"><a href="01_name/index.html">01_name</a></li>
-        <li style="--i: 2"><a href="02_mood/index.html">02_mood</a></li>
-        <li style="--i: 3"><a href="03_graphic/index.html">03_graphic</a></li>
-        <li style="--i: 4"><a href="04_Geometric/index.html">04_Geometric</a></li>
-        <li style="--i: 5"><a href="05_wave/index.html">05_wave</a></li>
-        <li style="--i: 6"><a href="06_walls/index.html">06_walls</a></li>
-        <li style="--i: 7"><a href="07_star/index.html">07_star</a></li>
-        <li style="--i: 8"><a href="08_Heigth/index.html">08_Heigth</a></li>
-        <li style="--i: 9"><a href="09_glitch/index.html">09_glitch</a></li>
-        <li style="--i: 10"><a href="10_words/index.html">10_words</a></li>
-        <li style="--i: 11"><a href="11_easing/index.html">11_easing</a></li>
-        <li style="--i: 12"><a href="12_voice_color/index.html">12_voice_color</a></li>
-        <li style="--i: 13"><a href="13_world/index.html">13_world</a></li>
-      </ul>
-    </header>
-  </main>
 
-  <!-- 패럴랙스 스크롤을 통해 아래에서 올라오는 소개 섹션 -->
-  <section class="intro-section">
-    <h2 class="intro-title">About Interactive Computing</h2>
-    <p class="intro-desc">
-      이 웹사이트는 코드를 통해 인터랙티브한 시각 예술과 컴퓨팅의 가능성을 탐구하는 프로젝트 아카이브입니다.<br>
-      마우스, 키보드, 웹캠, 그리고 음성 인식을 활용한 다양한 실험적 작업들을 경험해 보세요.
-    </p>
-  </section>
+  <header class="topbar">
+    <a href="index.html" class="nav-text">Interactive Computing</a>
+    <button class="menu-icon" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="project-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <ul class="project-menu" id="project-menu">
+      <li style="--i: 1"><a href="01_name/index.html">01_name</a></li>
+      <li style="--i: 2"><a href="02_mood/index.html">02_mood</a></li>
+      <li style="--i: 3"><a href="03_graphic/index.html">03_graphic</a></li>
+      <li style="--i: 4"><a href="04_Geometric/index.html">04_Geometric</a></li>
+      <li style="--i: 5"><a href="05_wave/index.html">05_wave</a></li>
+      <li style="--i: 6"><a href="06_walls/index.html">06_walls</a></li>
+      <li style="--i: 7"><a href="07_star/index.html">07_star</a></li>
+      <li style="--i: 8"><a href="08_Heigth/index.html">08_Heigth</a></li>
+      <li style="--i: 9"><a href="09_glitch/index.html">09_glitch</a></li>
+      <li style="--i: 10"><a href="10_words/index.html">10_words</a></li>
+      <li style="--i: 11"><a href="11_easing/index.html">11_easing</a></li>
+      <li style="--i: 12"><a href="12_voice_color/index.html">12_voice_color</a></li>
+      <li style="--i: 13"><a href="13_world/index.html">13_world</a></li>
+    </ul>
+  </header>
+
+  <main class="page" aria-label="Interactive Computing"></main>
+
+  <div class="scroll-container">
+    
+    <div class="about-stage" id="about">
+      
+      <div class="about-content-box">
+        <div>
+          <a class="about-link" id="main-about-btn">ABOUT</a>
+        </div>
+        
+        <p class="intro-desc">
+          2026학년도 1학기 ADOT - 인터랙티브 컴퓨팅<br><br>
+          이 웹사이트는 코드를 통해 인터랙티브한 시각 예술과 컴퓨팅의 가능성을 탐구하는 프로젝트 아카이브입니다.<br>
+          마우스, 키보드, 웹캠, 그리고 음성 인식을 활용한 다양한 실험적 작업들을 경험해 보세요.<br><br>
+          디자인조형학부 2025220058 최비아
+        </p>
+      </div>
+      
+    </div>
+    
+  </div>
 
   <script>
     const menuButton = document.querySelector(".menu-icon");
@@ -254,12 +335,60 @@
       projectMenu.classList.toggle("is-open", !isOpen);
     });
 
-    // 패럴랙스(Parallax) 스크롤 동작 구현
     const pageElement = document.querySelector(".page");
+    const aboutStage = document.querySelector(".about-stage");
+    
+    let currentY = 0;
+    let targetY = 0;
+    const easeAmount = 0.08; 
+
     window.addEventListener("scroll", () => {
-      const scrolled = window.scrollY;
-      // 스크롤 시 메인 메뉴 화면이 느린 속도(0.4배)로 같이 따라가면서 입체적인 깊이감을 줌
-      pageElement.style.transform = `translateY(${scrolled * 0.4}px)`;
+      targetY = window.scrollY;
+    });
+
+    function updateParallax() {
+      currentY += (targetY - currentY) * easeAmount;
+      
+      pageElement.style.transform = `translateY(${currentY * 0.4}px)`;
+      
+      if (currentY > window.innerHeight * 0.15) {
+        aboutStage.classList.add("is-centered");
+      } else if (targetY <= 5) {
+        aboutStage.classList.remove("is-centered");
+      }
+
+      requestAnimationFrame(updateParallax);
+    }
+    updateParallax();
+
+    const aboutBtn = document.querySelector("#main-about-btn");
+    aboutBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      
+      const targetPosition = window.innerHeight * 0.8; 
+      const startPosition = window.scrollY;
+      const distance = targetPosition - startPosition;
+      let startTime = null;
+      const duration = 1200; 
+
+      function animation(currentTime) {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const run = customBezierEase(timeElapsed, startPosition, distance, duration);
+        window.scrollTo(0, run);
+        if (timeElapsed < duration) {
+          requestAnimationFrame(animation);
+        }
+      }
+
+      function customBezierEase(t, b, c, d) {
+        t /= d;
+        const ts = t * t;
+        const tc = ts * t;
+        return b + c * (-2 * tc * ts + 7 * ts * ts - 8 * tc + 4 * ts);
+      }
+
+      requestAnimationFrame(animation);
     });
   </script>
 </body>
