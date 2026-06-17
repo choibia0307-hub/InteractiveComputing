@@ -26,6 +26,7 @@
       font-family: Arial, Helvetica, sans-serif;
       letter-spacing: 0;
       overflow: hidden;
+      overflow-x: hidden;
     }
 
     button,
@@ -36,8 +37,15 @@
     .page {
       min-height: 100vh;
       position: relative;
+      height: 100vh;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
       overflow: hidden;
       background: var(--cyan);
+      z-index: 1;
+      will-change: transform;
     }
 
     .topbar {
@@ -58,6 +66,7 @@
       margin: 0;
       color: var(--white);
       font-size: clamp(10px, 0.95vw, 13px);
+      font-size: clamp(30px, 2.85vw, 39px);
       font-weight: 700;
       line-height: 1;
       white-space: nowrap;
@@ -140,6 +149,36 @@
       white-space: nowrap;
     }
 
+    .intro-section {
+      position: relative;
+      z-index: 2;
+      margin-top: 100vh; /* 첫 화면 크기만큼 띄워서 스크롤해야 보이도록 설정 */
+      min-height: 100vh;
+      background: #111a18; /* 패럴랙스 대비 효과를 극대화하는 어두운 톤의 배경 */
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(20px, 5vw, 60px);
+      text-align: center;
+      box-shadow: 0 -20px 40px rgba(0, 0, 0, 0.3); /* 올라올 때 그림자 깊이감 추가 */
+    }
+
+    .intro-title {
+      font-size: clamp(28px, 4vw, 48px);
+      margin-bottom: 24px;
+      font-weight: 700;
+    }
+
+    .intro-desc {
+      font-size: clamp(16px, 1.5vw, 22px);
+      max-width: 760px;
+      line-height: 1.6;
+      opacity: 0.9;
+      word-break: keep-all; /* 한글 줄바꿈 최적화 */
+    }
+
     @media (max-width: 720px) {
       body {
         overflow: auto;
@@ -147,6 +186,7 @@
 
       .page {
         min-height: 100svh;
+        height: 100svh;
       }
 
       .topbar {
@@ -195,6 +235,15 @@
     </header>
   </main>
 
+  <!-- 패럴랙스 스크롤을 통해 아래에서 올라오는 소개 섹션 -->
+  <section class="intro-section">
+    <h2 class="intro-title">About Interactive Computing</h2>
+    <p class="intro-desc">
+      이 웹사이트는 코드를 통해 인터랙티브한 시각 예술과 컴퓨팅의 가능성을 탐구하는 프로젝트 아카이브입니다.<br>
+      마우스, 키보드, 웹캠, 그리고 음성 인식을 활용한 다양한 실험적 작업들을 경험해 보세요.
+    </p>
+  </section>
+
   <script>
     const menuButton = document.querySelector(".menu-icon");
     const projectMenu = document.querySelector("#project-menu");
@@ -203,6 +252,14 @@
       const isOpen = menuButton.getAttribute("aria-expanded") === "true";
       menuButton.setAttribute("aria-expanded", String(!isOpen));
       projectMenu.classList.toggle("is-open", !isOpen);
+    });
+
+    // 패럴랙스(Parallax) 스크롤 동작 구현
+    const pageElement = document.querySelector(".page");
+    window.addEventListener("scroll", () => {
+      const scrolled = window.scrollY;
+      // 스크롤 시 메인 메뉴 화면이 느린 속도(0.4배)로 같이 따라가면서 입체적인 깊이감을 줌
+      pageElement.style.transform = `translateY(${scrolled * 0.4}px)`;
     });
   </script>
 </body>
