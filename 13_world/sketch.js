@@ -31,6 +31,7 @@ function setup() {
 
   video = createCapture(VIDEO);
   video.size(640, 480);
+  video.elt.setAttribute('playsinline', ''); // 모바일 환경 및 사파리 브라우저 웹캠 호환성을 위한 필수 속성
   video.hide();
 
   handpose.detectStart(video, gotResult);
